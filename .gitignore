@@ -6,10 +6,7 @@ build/
 .kotlin
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -41,3 +38,17 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### API Keys and Secrets ###
+*.key
+*.pem
+**/secrets/
+.env
+.env.*
+!.env.example
+
+### Machine-specific ###
+gradle.properties
+
+### Claude Code ###
+.claude/
