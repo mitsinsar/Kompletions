@@ -1,4 +1,4 @@
-package com.s1mar.kompletions
+package com.s1mar.kompletion
 
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
@@ -38,9 +38,9 @@ class ConversationTest {
         }
     """.trimIndent()
 
-    private fun createMockClient(vararg responses: String): KompletionsClient {
+    private fun createMockClient(vararg responses: String): KompletionClient {
         val responseIterator = responses.iterator()
-        val client = KompletionsClient(KompletionsConfig.custom("http://localhost"))
+        val client = KompletionClient(KompletionConfig.custom("http://localhost"))
 
         val mockEngine = MockEngine { _ ->
             respond(
@@ -56,15 +56,15 @@ class ConversationTest {
             }
         }
 
-        val field = KompletionsClient::class.java.getDeclaredField("httpClient")
+        val field = KompletionClient::class.java.getDeclaredField("httpClient")
         field.isAccessible = true
         field.set(client, mockHttpClient)
 
         return client
     }
 
-    private fun createFailingClient(statusCode: HttpStatusCode = HttpStatusCode.InternalServerError): KompletionsClient {
-        val client = KompletionsClient(KompletionsConfig.custom("http://localhost"))
+    private fun createFailingClient(statusCode: HttpStatusCode = HttpStatusCode.InternalServerError): KompletionClient {
+        val client = KompletionClient(KompletionConfig.custom("http://localhost"))
 
         val mockEngine = MockEngine { _ ->
             respond(
@@ -80,7 +80,7 @@ class ConversationTest {
             }
         }
 
-        val field = KompletionsClient::class.java.getDeclaredField("httpClient")
+        val field = KompletionClient::class.java.getDeclaredField("httpClient")
         field.isAccessible = true
         field.set(client, mockHttpClient)
 
@@ -176,8 +176,9 @@ class ConversationTest {
             Message("user", "Hello"),
         )
 
+        // systemPrompt should be ignored since initialHistory already starts with system
         val conversation = Conversation(
-            client = KompletionsClient(KompletionsConfig.custom("http://localhost")),
+            client = KompletionClient(KompletionConfig.custom("http://localhost")),
             model = "test",
             systemPrompt = "New system prompt",
             initialHistory = history
@@ -196,7 +197,7 @@ class ConversationTest {
         )
 
         val conversation = Conversation(
-            client = KompletionsClient(KompletionsConfig.custom("http://localhost")),
+            client = KompletionClient(KompletionConfig.custom("http://localhost")),
             model = "test",
             systemPrompt = "Be helpful",
             initialHistory = history
@@ -212,7 +213,7 @@ class ConversationTest {
     @Test
     fun `addMessage injects message without API call`() {
         val conversation = Conversation(
-            client = KompletionsClient(KompletionsConfig.custom("http://localhost")),
+            client = KompletionClient(KompletionConfig.custom("http://localhost")),
             model = "test"
         )
 
@@ -228,7 +229,7 @@ class ConversationTest {
     @Test
     fun `clearHistory removes all messages`() {
         val conversation = Conversation(
-            client = KompletionsClient(KompletionsConfig.custom("http://localhost")),
+            client = KompletionClient(KompletionConfig.custom("http://localhost")),
             model = "test",
             systemPrompt = "System"
         )
@@ -246,12 +247,12 @@ class ConversationTest {
 
         val conversation = client.conversation("test-model", systemPrompt = "Be helpful")
 
-        assertThrows<KompletionsApiException> {
+        assertThrows<KompletionApiException> {
             conversation.sendFull("This should fail")
         }
 
         val history = conversation.getHistory()
-        assertEquals(1, history.size)
+        assertEquals(1, history.size) // only system message remains
         assertEquals("system", history[0].role)
     }
 
@@ -261,7 +262,7 @@ class ConversationTest {
 
         val conversation = client.conversation("test-model")
 
-        assertThrows<KompletionsApiException> {
+        assertThrows<KompletionApiException> {
             conversation.send("This should fail")
         }
 

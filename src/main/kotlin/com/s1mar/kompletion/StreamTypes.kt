@@ -1,4 +1,4 @@
-package com.s1mar.kompletions
+package com.s1mar.kompletion
 
 import kotlinx.serialization.Serializable
 

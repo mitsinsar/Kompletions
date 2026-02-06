@@ -33,7 +33,7 @@ Add as a composite build or publish to a local Maven repo:
 
 ```kotlin
 // settings.gradle.kts
-includeBuild("path/to/Kompletions")
+includeBuild("path/to/Kompletion")
 ```
 
 ## Quick Start
@@ -41,7 +41,7 @@ includeBuild("path/to/Kompletions")
 ### One-liner
 
 ```kotlin
-KompletionsClient.ollama().use { client ->
+KompletionClient.ollama().use { client ->
     val response = client.sendMessage("llama2", "What is Kotlin?")
     println(response.choices.first().message.content)
 }
@@ -50,7 +50,7 @@ KompletionsClient.ollama().use { client ->
 ### DSL Builder
 
 ```kotlin
-KompletionsClient.openai("api-key").use { client ->
+KompletionClient.openai("api-key").use { client ->
     val response = client.chatCompletion {
         model = "gpt-4"
         temperature = 0.7
@@ -66,7 +66,7 @@ KompletionsClient.openai("api-key").use { client ->
 ### Conversation (multi-turn)
 
 ```kotlin
-KompletionsClient.ollama().use { client ->
+KompletionClient.ollama().use { client ->
     val conversation = client.conversation("llama2", systemPrompt = "You are a tutor.")
 
     val a1 = conversation.send("What is a data class?")
@@ -100,7 +100,7 @@ conversation.send("Where were we?")
 ### Streaming
 
 ```kotlin
-KompletionsClient.openai("api-key").use { client ->
+KompletionClient.openai("api-key").use { client ->
     client.streamChatCompletion {
         model = "gpt-4"
         user("Write a haiku about Kotlin.")
@@ -116,26 +116,26 @@ KompletionsClient.openai("api-key").use { client ->
 ### OpenAI
 
 ```kotlin
-val client = KompletionsClient.openai("api-key")
+val client = KompletionClient.openai("api-key")
 ```
 
 ### Ollama (local)
 
 ```kotlin
-val client = KompletionsClient.ollama()                          // default localhost:11434
-val client = KompletionsClient.ollama("http://192.168.1.5:11434/v1")  // custom host
+val client = KompletionClient.ollama()                          // default localhost:11434
+val client = KompletionClient.ollama("http://192.168.1.5:11434/v1")  // custom host
 ```
 
 ### OpenRouter
 
 ```kotlin
-val client = KompletionsClient.openRouter("api-key")
+val client = KompletionClient.openRouter("api-key")
 ```
 
 ### Custom provider
 
 ```kotlin
-val client = KompletionsClient.custom(
+val client = KompletionClient.custom(
     baseUrl = "https://api.example.com/v1",
     apiKey = "your-key"
 )
@@ -144,8 +144,8 @@ val client = KompletionsClient.custom(
 ### Custom headers and timeout
 
 ```kotlin
-val client = KompletionsClient(
-    KompletionsConfig.openai("api-key").copy(
+val client = KompletionClient(
+    KompletionConfig.openai("api-key").copy(
         timeout = 120_000,
         headers = mapOf("X-Request-Id" to "abc-123")
     )
@@ -154,16 +154,16 @@ val client = KompletionsClient(
 
 ## Error Handling
 
-All Kompletions errors extend `KompletionsException`:
+All Kompletion errors extend `KompletionException`:
 
 ```kotlin
 try {
     val response = client.chat(request)
-} catch (e: KompletionsApiException) {
+} catch (e: KompletionApiException) {
     // HTTP error from the API (e.g., 401, 429, 500)
     println("HTTP ${e.statusCode}: ${e.responseBody}")
-} catch (e: KompletionsException) {
-    // Other Kompletions errors (e.g., no choices returned)
+} catch (e: KompletionException) {
+    // Other Kompletion errors (e.g., no choices returned)
     println("Error: ${e.message}")
 }
 ```
@@ -220,7 +220,7 @@ ChatResponse
 
 ## OpenAPI Generated Models
 
-On build, Kompletions generates Kotlin data classes from the official OpenAI OpenAPI spec using `kotlinx.serialization`. These models live in `com.s1mar.openai.models` and cover the full API surface. For most use cases, the built-in DSL types (`ChatRequest`, `ChatResponse`) are simpler and sufficient.
+On build, Kompletion generates Kotlin data classes from the official OpenAI OpenAPI spec using `kotlinx.serialization`. These models live in `com.s1mar.openai.models` and cover the full API surface. For most use cases, the built-in DSL types (`ChatRequest`, `ChatResponse`) are simpler and sufficient.
 
 ## License
 
