@@ -1,4 +1,4 @@
-package com.s1mar.kompletion
+package com.s1mar.kompletions
 
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -15,9 +15,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
 
 /**
- * Base exception for all Kompletion errors.
+ * Base exception for all Kompletions errors.
  */
-open class KompletionException(
+open class KompletionsException(
     message: String,
     cause: Throwable? = null
 ) : RuntimeException(message, cause)
@@ -25,17 +25,17 @@ open class KompletionException(
 /**
  * Exception thrown when the API returns a non-success HTTP status.
  */
-class KompletionApiException(
+class KompletionsApiException(
     val statusCode: Int,
     val responseBody: String
-) : KompletionException("API returned HTTP $statusCode: $responseBody")
+) : KompletionsException("API returned HTTP $statusCode: $responseBody")
 
 /**
  * Universal Kotlin client for OpenAI-compatible chat completion APIs.
  * Works with: OpenAI, Ollama, OpenRouter, and any OpenAI-compatible service.
  */
-class KompletionClient(
-    val config: KompletionConfig
+class KompletionsClient(
+    val config: KompletionsConfig
 ) : java.io.Closeable {
 
     private val baseUrl = config.baseUrl.trimEnd('/')
@@ -72,7 +72,7 @@ class KompletionClient(
 
         if (!response.status.isSuccess()) {
             val body = response.bodyAsText()
-            throw KompletionApiException(response.status.value, body)
+            throw KompletionsApiException(response.status.value, body)
         }
 
         return response.body()
@@ -90,7 +90,7 @@ class KompletionClient(
         }.execute { response ->
             if (!response.status.isSuccess()) {
                 val body = response.bodyAsText()
-                throw KompletionApiException(response.status.value, body)
+                throw KompletionsApiException(response.status.value, body)
             }
 
             val channel: ByteReadChannel = response.bodyAsChannel()
@@ -114,7 +114,7 @@ class KompletionClient(
                     Provider.OPENAI, Provider.CUSTOM -> append("Authorization", "Bearer $key")
                     Provider.OPENROUTER -> {
                         append("Authorization", "Bearer $key")
-                        append("HTTP-Referer", config.appUrl ?: "https://github.com/s1mar/kompletion")
+                        append("HTTP-Referer", config.appUrl ?: "https://github.com/s1mar/kompletions")
                         config.appName?.let { append("X-Title", it) }
                     }
                     Provider.OLLAMA -> {}
@@ -131,20 +131,20 @@ class KompletionClient(
     }
 
     companion object {
-        fun openai(apiKey: String): KompletionClient {
-            return KompletionClient(KompletionConfig.openai(apiKey))
+        fun openai(apiKey: String): KompletionsClient {
+            return KompletionsClient(KompletionsConfig.openai(apiKey))
         }
 
-        fun ollama(baseUrl: String = "http://localhost:11434/v1"): KompletionClient {
-            return KompletionClient(KompletionConfig.ollama(baseUrl))
+        fun ollama(baseUrl: String = "http://localhost:11434/v1"): KompletionsClient {
+            return KompletionsClient(KompletionsConfig.ollama(baseUrl))
         }
 
-        fun openRouter(apiKey: String): KompletionClient {
-            return KompletionClient(KompletionConfig.openRouter(apiKey))
+        fun openRouter(apiKey: String): KompletionsClient {
+            return KompletionsClient(KompletionsConfig.openRouter(apiKey))
         }
 
-        fun custom(baseUrl: String, apiKey: String? = null): KompletionClient {
-            return KompletionClient(KompletionConfig.custom(baseUrl, apiKey))
+        fun custom(baseUrl: String, apiKey: String? = null): KompletionsClient {
+            return KompletionsClient(KompletionsConfig.custom(baseUrl, apiKey))
         }
     }
 }
@@ -153,7 +153,7 @@ class KompletionClient(
  * DSL function to stream chat completions.
  * Returns a [Flow] of [ChatCompletionChunk].
  */
-fun KompletionClient.streamChatCompletion(
+fun KompletionsClient.streamChatCompletion(
     block: ChatRequestBuilder.() -> Unit
 ): Flow<ChatCompletionChunk> {
     val request = ChatRequestBuilder().apply(block).build().copy(stream = true)

@@ -1,11 +1,11 @@
-package com.s1mar.kompletion.examples
+package com.s1mar.kompletions.examples
 
-import com.s1mar.kompletion.*
+import com.s1mar.kompletions.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
-    KompletionClient.ollama().use { client ->
+    KompletionsClient.ollama().use { client ->
         println("=== Example 1: Simple message ===")
         simpleMessage(client)
 
@@ -23,7 +23,7 @@ fun main() = runBlocking {
     }
 }
 
-suspend fun simpleMessage(client: KompletionClient) {
+suspend fun simpleMessage(client: KompletionsClient) {
     val response = client.sendMessage(
         model = "gemma3:4b",
         message = "What is Kotlin?",
@@ -36,7 +36,7 @@ suspend fun simpleMessage(client: KompletionClient) {
     println("Tokens used: ${response.usage?.total_tokens}")
 }
 
-suspend fun dslBuilder(client: KompletionClient) {
+suspend fun dslBuilder(client: KompletionsClient) {
     val response = client.chatCompletion {
         model = "gemma3:4b"
         temperature = 0.8
@@ -49,7 +49,7 @@ suspend fun dslBuilder(client: KompletionClient) {
     println("Response: ${response.choices.first().message.content}")
 }
 
-suspend fun conversationExample(client: KompletionClient) {
+suspend fun conversationExample(client: KompletionsClient) {
     val conv = client.conversation(
         model = "gemma3:4b",
         systemPrompt = "You are a helpful coding assistant. Keep responses concise."
@@ -67,7 +67,7 @@ suspend fun conversationExample(client: KompletionClient) {
     }
 }
 
-suspend fun streamingExample(client: KompletionClient) {
+suspend fun streamingExample(client: KompletionsClient) {
     print("Streaming: ")
     client.streamChatCompletion {
         model = "gemma3:4b"
@@ -84,7 +84,7 @@ suspend fun streamingExample(client: KompletionClient) {
     println()
 }
 
-suspend fun directRequestResponse(client: KompletionClient) {
+suspend fun directRequestResponse(client: KompletionsClient) {
     val request = ChatRequest(
         model = "gemma3:4b",
         messages = listOf(

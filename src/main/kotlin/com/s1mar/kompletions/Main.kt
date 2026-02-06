@@ -1,13 +1,13 @@
-package com.s1mar.kompletion
+package com.s1mar.kompletions
 
 import kotlinx.coroutines.runBlocking
 
 /**
- * Quick demo of Kompletion.
+ * Quick demo of Kompletions.
  * Connects to a local Ollama instance by default.
  */
 fun main() = runBlocking {
-    KompletionClient.ollama().use { client ->
+    KompletionsClient.ollama().use { client ->
         print("Streaming: ")
         client.streamChatCompletion {
             model = "gemma3:4b"

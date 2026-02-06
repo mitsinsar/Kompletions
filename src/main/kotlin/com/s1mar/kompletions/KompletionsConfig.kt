@@ -1,9 +1,9 @@
-package com.s1mar.kompletion
+package com.s1mar.kompletions
 
 /**
- * Configuration for Kompletion client.
+ * Configuration for Kompletions client.
  */
-data class KompletionConfig(
+data class KompletionsConfig(
     val baseUrl: String,
     val apiKey: String? = null,
     val provider: Provider = Provider.CUSTOM,
@@ -16,8 +16,8 @@ data class KompletionConfig(
         /**
          * OpenAI configuration
          */
-        fun openai(apiKey: String): KompletionConfig {
-            return KompletionConfig(
+        fun openai(apiKey: String): KompletionsConfig {
+            return KompletionsConfig(
                 baseUrl = "https://api.openai.com/v1",
                 apiKey = apiKey,
                 provider = Provider.OPENAI
@@ -27,8 +27,8 @@ data class KompletionConfig(
         /**
          * Ollama configuration
          */
-        fun ollama(baseUrl: String = "http://localhost:11434/v1"): KompletionConfig {
-            return KompletionConfig(
+        fun ollama(baseUrl: String = "http://localhost:11434/v1"): KompletionsConfig {
+            return KompletionsConfig(
                 baseUrl = baseUrl,
                 provider = Provider.OLLAMA
             )
@@ -41,8 +41,8 @@ data class KompletionConfig(
             apiKey: String,
             appUrl: String? = null,
             appName: String? = null
-        ): KompletionConfig {
-            return KompletionConfig(
+        ): KompletionsConfig {
+            return KompletionsConfig(
                 baseUrl = "https://openrouter.ai/api/v1",
                 apiKey = apiKey,
                 provider = Provider.OPENROUTER,
@@ -54,8 +54,8 @@ data class KompletionConfig(
         /**
          * Custom OpenAI-compatible provider
          */
-        fun custom(baseUrl: String, apiKey: String? = null): KompletionConfig {
-            return KompletionConfig(
+        fun custom(baseUrl: String, apiKey: String? = null): KompletionsConfig {
+            return KompletionsConfig(
                 baseUrl = baseUrl,
                 apiKey = apiKey,
                 provider = Provider.CUSTOM

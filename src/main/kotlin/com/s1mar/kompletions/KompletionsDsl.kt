@@ -1,4 +1,4 @@
-package com.s1mar.kompletion
+package com.s1mar.kompletions
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -75,7 +75,7 @@ data class Usage(
 /**
  * Simple extension function for easy chat completions.
  */
-suspend fun KompletionClient.sendMessage(
+suspend fun KompletionsClient.sendMessage(
     model: String,
     message: String,
     systemPrompt: String? = null,
@@ -173,7 +173,7 @@ class ChatRequestBuilder {
 /**
  * DSL function to build and send a chat request.
  */
-suspend fun KompletionClient.chatCompletion(
+suspend fun KompletionsClient.chatCompletion(
     block: ChatRequestBuilder.() -> Unit
 ): ChatResponse {
     val request = ChatRequestBuilder().apply(block).build()
@@ -186,7 +186,7 @@ suspend fun KompletionClient.chatCompletion(
  * Thread safety: Concurrent calls to [send]/[sendFull] are serialized via a mutex.
  * [addMessage], [clearHistory], and [getHistory] are not synchronized with send operations.
  *
- * @param client The KompletionClient to use for API calls.
+ * @param client The KompletionsClient to use for API calls.
  * @param model The model name to use for completions.
  * @param systemPrompt Optional system prompt prepended to the history.
  * @param initialHistory Optional list of messages to seed the conversation with.
@@ -194,7 +194,7 @@ suspend fun KompletionClient.chatCompletion(
  *   is prepended only if [initialHistory] doesn't already start with a system message.
  */
 class Conversation(
-    private val client: KompletionClient,
+    private val client: KompletionsClient,
     private val model: String,
     systemPrompt: String? = null,
     initialHistory: List<Message>? = null
@@ -232,7 +232,7 @@ class Conversation(
             val request = ChatRequest(model = model, messages = messages.toList())
             val response: ChatResponse = client.chat(request)
             val assistantMsg = response.choices.firstOrNull()?.message
-                ?: throw KompletionException("No choices returned in API response")
+                ?: throw KompletionsException("No choices returned in API response")
             messages.add(Message(assistantMsg.role, assistantMsg.content, assistantMsg.name))
             response
         } catch (e: Exception) {
@@ -258,7 +258,7 @@ class Conversation(
 /**
  * Start a new conversation.
  */
-fun KompletionClient.conversation(
+fun KompletionsClient.conversation(
     model: String,
     systemPrompt: String? = null,
     initialHistory: List<Message>? = null
