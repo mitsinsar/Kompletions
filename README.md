@@ -9,6 +9,10 @@
 
 # Kompletions
 
+[![CI](https://github.com/s1mar/Kompletions/actions/workflows/ci.yml/badge.svg)](https://github.com/s1mar/Kompletions/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.s1mar/kompletions)](https://central.sonatype.com/artifact/io.github.s1mar/kompletions)
+
 A lightweight Kotlin client for OpenAI-compatible chat completion APIs. Works with OpenAI, Ollama, OpenRouter, and any provider that implements the OpenAI API format.
 
 ## Features
@@ -23,6 +27,14 @@ A lightweight Kotlin client for OpenAI-compatible chat completion APIs. Works wi
 - **Custom headers** for authentication proxies, observability, etc.
 - **Minimal dependencies** — Ktor + kotlinx-serialization only
 
+## Why Kompletions?
+
+- **DSL-first design** — Chat requests read like native Kotlin, not Java builder chains
+- **Provider-agnostic** — One client for OpenAI, Ollama, OpenRouter, Azure, or any OpenAI-compatible endpoint. Swap a URL, not your codebase
+- **Focused scope** — Chat completions done right, not a sprawling API wrapper
+- **Small codebase** — Auditable and readable end-to-end in an afternoon
+- **Low floor, high ceiling** — A beginner can make their first AI call in 5 lines. A senior can build streaming tool-calling agents with structured outputs
+
 ## Setup
 
 ### Prerequisites
@@ -36,9 +48,24 @@ A lightweight Kotlin client for OpenAI-compatible chat completion APIs. Works wi
 ./gradlew build
 ```
 
-### Gradle dependency (local)
+### Tests
 
-Add as a composite build or publish to a local Maven repo:
+66 tests across 6 test suites covering serialization, DSL builders, conversation management, SSE parsing, concurrency safety, and provider configuration. All tests use mocked HTTP responses — no API keys or network access required.
+
+```bash
+./gradlew test
+```
+
+### Gradle dependency
+
+```kotlin
+// build.gradle.kts
+dependencies {
+    implementation("io.github.s1mar:kompletions:0.1.0")
+}
+```
+
+For local development, add as a composite build:
 
 ```kotlin
 // settings.gradle.kts
@@ -305,7 +332,7 @@ Conversation methods automatically roll back the user message from history on fa
 | DSL Property        | Wire Name            | Type              | Description                        |
 |---------------------|----------------------|-------------------|------------------------------------|
 | `model`             | `model`              | `String`          | Model name (required)              |
-| —                   | `messages`           | `List<Message>`   | Conversation messages (required)   |
+| *(built via DSL)*   | `messages`           | `List<Message>`   | Conversation messages (required)   |
 | `temperature`       | `temperature`        | `Double?`         | Randomness (0.0-2.0)              |
 | `maxTokens`         | `max_tokens`         | `Int?`            | Maximum response length            |
 | `topP`              | `top_p`              | `Double?`         | Nucleus sampling                   |

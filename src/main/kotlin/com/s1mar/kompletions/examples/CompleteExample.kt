@@ -5,6 +5,7 @@ import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import java.lang.IO.println
 
 fun main() = runBlocking {
     KompletionClient.ollama().use { client ->

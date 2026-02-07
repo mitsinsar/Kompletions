@@ -1,10 +1,11 @@
 plugins {
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.serialization") version "2.3.0"
+    id("com.vanniktech.maven.publish") version "0.30.0"
 }
 
-group = "com.s1mar.kompletions"
-version = "1.0-SNAPSHOT"
+group = "io.github.s1mar"
+version = "0.1.0"
 
 repositories {
     mavenCentral()
@@ -34,8 +35,44 @@ dependencies {
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     runtimeOnly("org.slf4j:slf4j-simple:2.0.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+mavenPublishing {
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+
+    coordinates("io.github.s1mar", "kompletions", version.toString())
+
+    pom {
+        name.set("Kompletions")
+        description.set("A lightweight Kotlin DSL client for OpenAI-compatible chat completion APIs")
+        inceptionYear.set("2025")
+        url.set("https://github.com/s1mar/Kompletions")
+
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("s1mar")
+                name.set("s1mar")
+                url.set("https://github.com/s1mar")
+            }
+        }
+
+        scm {
+            connection.set("scm:git:git://github.com/s1mar/Kompletions.git")
+            developerConnection.set("scm:git:ssh://git@github.com/s1mar/Kompletions.git")
+            url.set("https://github.com/s1mar/Kompletions")
+        }
+    }
 }
